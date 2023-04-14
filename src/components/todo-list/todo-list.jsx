@@ -1,21 +1,26 @@
 import { useState } from "react";
 import TodoItem from "./todo-item";
 import Form from "react-bootstrap/Form";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
+import useLoading from "../../hooks/use-loading";
 
 const TodoList = () => {
   const [title, setTitle] = useState("");
   const [todos, setTodos] = useState([]);
-
-  console.log("todos", todos);
+  const { loading, on, off } = useLoading();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const list = [...todos, title];
+    on();
 
-    setTodos(list);
-    setTitle("");
+    setTimeout(() => {
+      const list = [...todos, title];
+
+      setTodos(list);
+      setTitle("");
+      off();
+    }, 1000);
   };
 
   const handleChange = (e) => {
@@ -26,6 +31,7 @@ const TodoList = () => {
 
   return (
     <Container data-testid="todolist">
+      {loading && <p>loading...</p>}
       <Form onSubmit={handleSubmit}>
         <Form.Label htmlFor="title">Todo Item</Form.Label>
         <Form.Control
